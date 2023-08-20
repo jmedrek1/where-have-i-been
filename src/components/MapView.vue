@@ -1,14 +1,17 @@
 <template>
     <div class="map-container">
         <div id="map"></div>
-        <button @click="saveMarkers">Save Markers</button>
-        <!--Add clear button-->
+        <div class="button-container">
+            <button class="button" @click="saveMarkers">Save Markers</button>
+            <button class="button" @click="generateMapImage">Generate Map Image</button>
+        </div>
     </div>
 </template>
 
 <script>
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import leafletImage from "leaflet-image";
 
 const customIcon = L.icon({
     iconUrl: "/marker-icon.png",
@@ -56,6 +59,18 @@ export default {
                 });
             }
         },
+        generateMapImage() {
+            leafletImage(this.map, (err, canvas) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                // convert to image data url
+                const image = canvas.toDataURL("image/png");
+                const win = window.open();
+                win.document.write(`<img src="${image}" alt="Map Image"/>`);
+            });
+        }
     },
 }
 </script>
@@ -71,5 +86,22 @@ export default {
     width: 80%;
     height: 600px;
     margin-bottom: 10px;
+}
+.buttons-container {
+    display: flex;
+    justify-content: center;
+}
+.button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.button:hover {
+    background-color: #2980b9;
 }
 </style>
